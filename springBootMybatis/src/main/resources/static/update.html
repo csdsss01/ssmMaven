@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery1.8.3.min.js"></script>
+    <style>
+        table{
+            width:400px;
+            list-style: none;
+            border-collapse: collapse;
+        }
+        td{
+            border:4px solid white;
+            text-align: center;
+            background-color: aquamarine;
+        }
+        input[type="text"]{
+            width:220px;
+            height:30px;
+            float:left;
+        }
+        input[type="button"]{
+            width:100px;
+            height:30px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <table>
+        <tr>
+            <td>员工姓名</td>
+            <td><input type="text" name = "ename" id = "ename"/></td>
+        </tr>
+        <tr>
+            <td>员工职位</td>
+            <td><input type="text" name = "job" id ="job"/></td>
+        </tr>
+        <tr>
+            <td>员工工资</td>
+            <td><input type="text" name = "sal" id="sal"/></td>
+        </tr>
+        <tr>
+            <td>员工奖金</td>
+            <td><input type="text" name = "comm" id="comm"/></td>
+        </tr>
+        <tr>
+            <td>部门编号</td>
+            <td><input type="text" name = "deptNo" id="deptNo"/></td>
+        </tr>
+
+        <tr style="display: none">
+
+            <td><input type="text" name = "empNo" id="empNo"/></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="button"  id="update" value ="修改" onclick="update()"/></td>
+        </tr>
+    </table>
+</center>
+<script>
+       $(function () {
+           /* 用途: 接收地直栏参数 取id=1 根据ID的值 */
+           var urlinfo=window.location.href; //获取当前页面的url
+           var  len=urlinfo.length;//获取url的长度
+           var offset=urlinfo.indexOf("?");//设置参数字符串开始的位置
+           var newsidinfo=urlinfo.substr(offset,len);//取出参数字符串 这里会获得类似“id=1”这样的字符串
+           var newsids=newsidinfo.split("=");//对获得的参数字符串按照“=”进行分割
+           var newsid=newsids[1];//得到参数值
+
+           $.ajax({
+               url : "ByidgetListSS",
+               type : "POST",
+               contentType : "application/json",
+               dataType : "json",
+               data : JSON.stringify(newsid),
+               success : function(data) {
+                    if(data!=""){
+
+                        $("#ename").val(data[0].ename);
+                        $("#job").val(data[0].job);
+                        $("#comm").val(data[0].comm);
+                        $("#deptNo").val(data[0].deptNo);
+                        $("#sal").val(data[0].salary);
+                        $("#empNo").val(data[0].empNo);
+                    }else{
+                        alert("出错了")
+                    }
+               }
+           })
+
+        $("#update").click(function () {
+            alert("进入修改")
+            var param = {
+                "empNo":$("#empNo").val(),
+                "ename" :$("#ename").val(),
+                "job" :$("#job").val(),
+                "salary" :$("#sal").val(),
+                "comm" :$("#comm").val(),
+                "deptNo" :$("#deptNo").val(),
+            }
+            $.ajax({
+                url : "RequestBodySS",
+                type : "post",
+                contentType : "application/json",
+                dataType : "json",
+                data : JSON.stringify(param),
+                success : function(data) {
+                    if(data>0){
+                        location.href="gotoEmpList.do";
+                    }else{
+                        alert("修改失败")
+                    }
+                }
+            });
+        })
+
+       })
+
+
+</script>
+</body>
+</html>

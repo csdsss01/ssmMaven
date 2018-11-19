@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../jquery1.8.3.min.js"></script>
+    <style>
+        table{
+            width:1000px;
+            min-height:200px;
+            list-style: none;
+            border-collapse: collapse;
+
+        }
+        td{
+            border:4px solid white;
+            text-align: center;
+            line-height: 40px;
+            background-color: aquamarine;
+        }
+        input[type="text"]{
+            height: 30px;
+        }
+        input[type="button"]{
+            height: 30px;
+            width:50px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+
+
+
+
+
+            //alert(111);
+            $.ajax({
+                url : "getlist",
+                type : "POST",
+                dataType : "json",
+                success : function(data) {
+
+                    if(data!=''){
+                        var str="";
+                        for (var i=0;i<data.length;i++){
+                            str+="<tr>" +
+                                "<td class='empNo'>"+data[i].empNo+"</td>" +
+                                "<td>"+data[i].ename+"</td>" +
+                                "<td>"+data[i].job+"</td>" +
+                                "<td>"+data[i].salary+"</td>"+
+                                "<td>"+data[i].comm+"</td>" +
+                                "<td>"+data[i].hireDate+"</td>" +
+                                "<td>"+data[i].marName+"</td>" +
+                                "<td>"+data[i].deptNo+"</td>" +
+                                "<td>"+data[i].deptName+"</td>" +
+                                "<td><a href='../update.html?empNo="+data[i].empNo+"'>修改</a>&nbsp;&nbsp;<input type='button' class='del' onclick='del()' value='删除'>" +
+                                '</tr>';
+                        }
+                        $("#tby").append(str);
+                    }
+                    //location.href = "/user/showAllUser";
+                }
+            });
+        })
+
+
+
+
+        $.ajax({
+            url : "listTS",
+            type : "POST",
+            dataType : "json",
+            success : function(data){
+
+                $("#ts").html(data.user)
+            }
+
+        });
+
+
+
+
+        /**
+         * 删除
+         */
+        function del() {
+
+            $("table").on("click",".del",function(){
+            var empNo = $(this).parent().parent().find(".empNo").html();
+            alert(empNo);
+            $.ajax({
+                url : "empDeleteSS",
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                data : JSON.stringify(empNo),
+                success : function(data) {
+                    location.href="gotoEmpList.do";
+                }
+            });
+            });
+
+        }
+    </script>
+</head>
+<body>
+<center>
+    <h1>人员列表</h1>
+   <h3><a href="../add.html" style=padding-right:740px;>新增</a></h3>
+    <!--<input type="text" name ="sel" id ="sel" /><input type="button" value="查询"  onclick="sel()"/>-->
+    欢迎：<span style="color: red" id="ts"></span>
+</center>
+<center>
+    <table>
+        <thead>
+        <tr>
+            <td>员工编号</td>
+            <td>员工姓名</td>
+            <td>员工职位</td>
+            <td>员工工资</td>
+            <td>员工奖金</td>
+            <td>入职时间</td>
+            <td>领导名称</td>
+            <td>部门编号</td>
+            <td>部门名称</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody id="tby">
+        </tbody>
+    </table>
+    <div><img src="show?fileName=3.jpg"></div>
+</center>
+
+</body>
+</html>

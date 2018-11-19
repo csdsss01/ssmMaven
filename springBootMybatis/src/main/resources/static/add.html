@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery1.8.3.min.js"></script>
+    <style>
+        table{
+            width:400px;
+            height:300px;
+            list-style: none;
+            border-collapse: collapse;
+
+        }
+        td{
+            border:4px solid white;
+            text-align: center;
+            background-color: aquamarine;
+        }
+        input[type="text"]{
+            width:220px;
+            height:30px;
+            float:left;
+        }
+        input[type="button"]{
+            width:100px;
+            height:30px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <table>
+        <tr>
+            <td>员工姓名</td>
+            <td><input type="text" name = "ename" id = "ename"/></td>
+        </tr>
+        <tr>
+            <td>员工职位</td>
+            <td><input type="text" name = "job" id ="job"/></td>
+        </tr>
+        <tr>
+            <td>员工工资</td>
+            <td><input type="text" name = "sal" id="sal"/></td>
+        </tr>
+        <tr>
+            <td>员工奖金</td>
+            <td><input type="text" name = "comm" id="comm"/></td>
+        </tr>
+        <tr>
+            <td>部门编号</td>
+            <td><input type="text" name = "deptNo" id="deptNo"/></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="button" value ="新增" onclick="btn()"/></td>
+        </tr>
+    </table>
+</center>
+<script>
+    function btn() {
+
+        var param = {
+            "ename" :$("#ename").val(),
+            "job" :$("#job").val(),
+            "salary" :$("#sal").val(),
+            "comm" :$("#comm").val(),
+            "deptNo" :$("#deptNo").val(),
+        }
+        $.ajax({
+            url : "addId",
+            type : "post",
+            contentType : "application/json",
+            dataType : "json",
+            data : JSON.stringify(param),
+            success : function(data) {
+                if(data>0){
+                    location.href="gotoEmpList.do";
+                }else{
+                    location.href="add.html";
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.ssm.dao.EmpDao">
+
+    <select id="getList" resultType="emp">
+        select empno,ename,job,deptno,sal as salary,comm,to_char(hiredate,'yyyy-mm-dd') as hireDate,
+        (select ename from emp b where a.mgr=b.empno) as marName ,(select dname from dept where deptno=a.deptno) as deptName
+        from emp a
+        <where>
+            <if test="ename!=null and ename!=''">
+                and ename like '%'||#{ename}||'%'
+            </if>
+        </where>
+        order by ${sort} ${order} <!--${}取值时是原封不动的取数据，相当于占位符  可以进行sql注入  #{}可以防止sql注入-->
+    </select>
+
+
+    <!--新增-->
+    <insert id="addEmp">
+        insert into emp (empno,ename,job,sal,comm,hiredate,deptno) values(emp_add_id.nextval,#{ename},#{job},#{salary},#{comm},sysdate,#{deptNo})
+    </insert>
+
+    <!--删除-->
+    <delete id="deleteEmp">
+        delete from emp where empno = #{empNo}
+    </delete>
+    <select id="byIdgetList" resultType="emp">
+        SELECT empno,ename,job,deptno,sal as salary,comm FROM  emp WHERE empno= #{newsid}
+    </select>
+    <insert id="empUpdate">
+        update emp set ename=#{ename},job = #{job},sal=#{salary},comm=#{comm},deptno=#{deptNo} where empno=#{empNo}
+    </insert>
+    <select id="userLogin" resultType="map">
+        select  * from tb_user WHERE username=#{username} and password=#{password}
+    </select>
+    
+    <select id="getProListByDeptNo"  statementType="CALLABLE" resultType="emp">
+        call pro_query_emp_bydeptno(#{deptNo,jdbcType=INTEGER,mode=IN},#{csrEmp,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=empResult})
+    </select>
+
+        <resultMap id="empResult" type="emp">
+            <id column="empno" property="empNo"></id>
+            <result column="ename" property="ename"></result>
+            <result column="job" property="job"></result>
+            <result column="sal" property="salary"></result>
+            <result column="hiredate" property="hireDate"></result>
+            <result column="comm" property="comm"></result>
+        </resultMap>
+
+    <insert id="addId">
+        <selectKey keyProperty="empNo" order="BEFORE" resultType="int">
+            SELECT emp_add_id.nextval from dual
+        </selectKey>
+        insert into emp (empno,ename) VALUES (#{empNo},#{ename})
+    </insert>
+</mapper>
+
