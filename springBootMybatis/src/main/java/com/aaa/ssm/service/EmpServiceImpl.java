@@ -63,7 +63,8 @@ public class EmpServiceImpl implements EmpService {
     @Override
     public int addId(Map map) {
          int a =empDao.addId(map);
-        System.out.println("返回的主键："+map.get("empNo"));
+        System.out.println("111111111111111111111111111111111111111111111111111111111111111111");
+         System.out.println("返回的主键："+map.get("empNo"));
         return a;
     }
 }
